@@ -77,6 +77,9 @@ def reorderQueue(length, offset, skip):
     arr = [i for i in range(l)]
     current = offset - 1
     reordered = []
+    if skip < 0:
+        skip -= 1
+        current = (current + 1) % l
     while l > 0:
         current = (current + skip) % l
         reordered.append(arr.pop(current))
