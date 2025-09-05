@@ -65,11 +65,32 @@ def countIt(nums,n):
         return count
 ```
 
+- Another solution is to use two variables - left and flat to keep track of left slope and flat height.
+- If current and flat are equal, continue.
+- Else, current is the right slope. Compare it with left and flat and calculate if it is a mountain or a valley.
+- Only one pass is enough.
+
+```
+def countIt(nums, n):
+    count = 0
+    left = nums[0]
+    flat = nums[1]
+    for current in nums[2:]:
+        if current == flat:
+            continue
+        if (flat - left) * (flat - current) > 0:
+            count += 1
+        left = flat
+        flat = current     
+    return count
+```
+
+
 ## IPL Ticket Management
 
 - This problem is a very similar variant of the Josephus problem, but with negative skip and a starting position.
 - Incorporate that into Josephus and you have the solution.
-- Make sure to verify with the sample how skip works and if offset is the 1-based position or 0-based index.
+- Make sure to verify with the sample how skip works for positive and negative and if offset is the 1-based position or 0-based index.
 
 ```
 def reorderQueue(length, offset, skip):
@@ -89,7 +110,7 @@ def reorderQueue(length, offset, skip):
     return reordered
 ```
 
-##Find Triplets
+## Find Triplets
 - This is a binary search problem if you want the most time optimized solution
 - From the problem statement we know that there is either 1 or 0 triplet and pairs or triplets both occur consecutively.
 - Based on this we see a property, if no triplet has occured before a particular index, then pairs start at the even index implying the triplet is on the right side
@@ -147,4 +168,31 @@ public static int findTriplet(int n, List<Integer> arr) {
         return -1;
 
     }
+```
+
+## Organizing Containers of Balls
+
+- The key is to see the fact that the total number of balls in every container remains the same (since we can only swap balls between two containers, the total count does not change).
+- Second, we can convert this to subproblem. Suppose the answer is possible.
+- We perform swap operations so that the container i has only one kind of balls, say type j. We can do this by swapping out every ball of other types for balls of type j. Now, we can ignore the container i and type j. This converts this into a subproblem with with n - 1 containers and n - 1 types.
+- We can recursively do this until all containers hold only one kind of balls.
+- Therefore, for solution to be possible, it is enough that the number of balls in a container matches the number of balls of a specific type and it is possible to find matching types for all containers.
+- By this logic, we can determine if it is possible or not as follows:
+  - Count the total number of balls per each container and sort it.
+  - Count the number of balls per each type across containers and sort it.
+  - If both sorted arrays are same, then it is possible to organize the balls into one type per container.
+  - If not, then it is impossible.
+
+```
+def organizingContainers(container):
+    n = len(container)
+    containers = [0 for i in range(n)]
+    types = [0 for i in range(n)]
+    for nrow in range(n):
+        for ncol in range(n):
+            containers[nrow] += container[nrow][ncol]
+            types[ncol] += container[nrow][ncol]
+    containers.sort()
+    types.sort()
+    return "Possible" if all([c == t for c, t in zip(containers, types)]) else "Impossible"
 ```
