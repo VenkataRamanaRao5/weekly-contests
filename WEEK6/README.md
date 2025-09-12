@@ -78,3 +78,55 @@ def isPerfectSquare(num):
 ```
 
 ## Subarray split
+
+- This is again a binary search problem where we have to search for the maximum sum possible
+- Searching for the maximum sum is again a greedy choice. We choose a sum as possible sum and we pass it to a helper function
+- In this helper function we try to divide the array into some number of parts such that the sum of any subarray is less than the chosen sum.
+- If number of parts divided is greater than K , then this sum is too small to be a viable maximum sum and hence we have to choose for a larger sum and retry
+- If the number of parts is less than or equal to K, then this sum is a viable sum, but we may have a possibility of finding an even smaller sum so we continue our search in binary search pattern
+- If number_of_parts>k then low=mid+1, else high=mid-1 is the condition
+- To find the number of parts, greedily add the seen elements to the running sum of subarray until the sum exceeds the limit_sum choosen for the particular trial
+
+```
+class Solution {
+    boolean isPossible(int[] nums,long allowed,int k){
+        int curSplitCount=1;
+        long runningTotal=0L;
+        for(int a:nums){
+            if(a>allowed){
+                return false;
+            }
+            else if(curSplitCount>k){
+                return false;
+            }
+            else if(runningTotal+(long)a>allowed){
+                runningTotal=a;
+                curSplitCount++;
+            }else{
+                runningTotal+=a;
+            }
+        }
+        return curSplitCount<=k;
+    }
+    public int splitArray(int[] nums, int k) {
+        long end=0L;
+        for(int a:nums){
+            end+=(long)a;
+        }
+        long start=0;
+        int ans=0;
+        while(start<=end){
+            long mid=start+(end-start)/2;
+           
+            if(isPossible(nums,mid,k)){
+                ans=(int)mid;
+                end=mid-1;
+            }else{
+                start=mid+1;
+            }
+        }
+        
+        return ans;
+    }
+}
+```
